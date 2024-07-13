@@ -51,16 +51,22 @@ def unite_video_and_audio(file_name):
 
 
 def start():
-	totalVideos = pathsList.__len__()
+	totalVideos = len(pathsList)
 	totalDone = 0
+	successfulDownloads = []
+
 	while totalDone < totalVideos:
 		try:
 			for path in pathsList:
+				if path in successfulDownloads:
+					continue  #skip the videos that are already succesfully downloaded
 				totalDone += 1
 				yt = YouTube(path)
 				download_audio(yt)
 				download_video(yt)
 				unite_video_and_audio(yt.title)
+				successfulDownloads.append(path)  #mark the video succesfully downloaded
+
 		except Exception as e:
 			totalDone -= 1
 			print("-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-")
@@ -68,12 +74,10 @@ def start():
 			print("url:", path)
 			print("error:", e)
 			print("-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-")
-		finally:
-			print("======================================================================")
-			print("videos amount:", totalVideos,)
-			print("videos converted:", totalDone)
-			print("======================================================================")
-		
+	print("======================================================================")
+	print("videos amount:", totalVideos,)
+	print("videos converted:", totalDone)
+	print("======================================================================")
 	print("All downloads finished check the folder 'videos' and enjoy.")
 
 if __name__ == '__main__':
